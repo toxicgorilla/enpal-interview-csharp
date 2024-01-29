@@ -3,15 +3,10 @@ using Microsoft.Extensions.Logging;
 
 namespace UrlShortenerService.Application.Common.Behaviours;
 
-public class UnhandledExceptionBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse> where TRequest : notnull
+public class UnhandledExceptionBehaviour<TRequest, TResponse>(ILogger<TRequest> logger)
+    : IPipelineBehavior<TRequest, TResponse>
+    where TRequest : notnull
 {
-    private readonly ILogger<TRequest> _logger;
-
-    public UnhandledExceptionBehaviour(ILogger<TRequest> logger)
-    {
-        _logger = logger;
-    }
-
     public async Task<TResponse> Handle(TRequest request, CancellationToken cancellationToken, RequestHandlerDelegate<TResponse> next)
     {
         try
@@ -22,7 +17,7 @@ public class UnhandledExceptionBehaviour<TRequest, TResponse> : IPipelineBehavio
         {
             var requestName = typeof(TRequest).Name;
 
-            _logger.LogError(ex, "UrlShortenerService Request: Unhandled Exception for Request {Name} {@Request}", requestName, request);
+            logger.LogError(ex, "UrlShortenerService Request: Unhandled Exception for Request {Name} {@Request}", requestName, request);
 
             throw;
         }

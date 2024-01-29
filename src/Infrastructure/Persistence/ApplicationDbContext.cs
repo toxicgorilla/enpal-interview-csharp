@@ -4,41 +4,33 @@ using UrlShortenerService.Infrastructure.Persistence.Interceptors;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using UrlShortenerService.Domain.Entities;
+using UrlShortenerService.Infrastructure.Common;
 
 namespace UrlShortenerService.Infrastructure.Persistence;
 
-public class ApplicationDbContext : DbContext, IApplicationDbContext
+public class ApplicationDbContext(
+    DbContextOptions<ApplicationDbContext> options,
+    IMediator mediator,
+    AuditableEntitySaveChangesInterceptor auditableEntitySaveChangesInterceptor)
+    : DbContext(options), IApplicationDbContext
 {
-    private readonly IMediator _mediator;
-    private readonly AuditableEntitySaveChangesInterceptor _auditableEntitySaveChangesInterceptor;
-
     public DbSet<Url> Urls => Set<Url>();
-
-    public ApplicationDbContext(
-        DbContextOptions<ApplicationDbContext> options,
-        IMediator mediator,
-        AuditableEntitySaveChangesInterceptor auditableEntitySaveChangesInterceptor)
-        : base(options)
-    {
-        _mediator = mediator;
-        _auditableEntitySaveChangesInterceptor = auditableEntitySaveChangesInterceptor;
-    }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
-        builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+        _ = builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 
         base.OnModelCreating(builder);
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.AddInterceptors(_auditableEntitySaveChangesInterceptor);
+        _ = optionsBuilder.AddInterceptors(auditableEntitySaveChangesInterceptor);
     }
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
-        await _mediator.DispatchDomainEvents(this);
+        await mediator.DispatchDomainEvents(this);
 
         return await base.SaveChangesAsync(cancellationToken);
     }

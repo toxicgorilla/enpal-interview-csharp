@@ -1,33 +1,34 @@
-﻿using UrlShortenerService.Application.Common.Interfaces;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using UrlShortenerService.Application.Common.Interfaces;
 using UrlShortenerService.Infrastructure.Persistence;
 using UrlShortenerService.Infrastructure.Persistence.Interceptors;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using UrlShortenerService.Infrastructure.Services;
 
-namespace Microsoft.Extensions.DependencyInjection;
+namespace UrlShortenerService.Infrastructure;
 
 public static class ConfigureServices
 {
     public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddScoped<AuditableEntitySaveChangesInterceptor>();
+        _ = services.AddScoped<AuditableEntitySaveChangesInterceptor>();
 
         if (configuration.GetValue<bool>("UseInMemoryDatabase"))
         {
-            services.AddDbContext<ApplicationDbContext>(options =>
+            _ = services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseInMemoryDatabase("UrlShortenerServiceDb"));
         }
         else
         {
-            services.AddDbContext<ApplicationDbContext>(options =>
+            _ = services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"),
                     builder => builder.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
         }
 
-        services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>());
+        _ = services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>());
 
-        services.AddScoped<ApplicationDbContextInitialiser>();
+        _ = services.AddScoped<ApplicationDbContextInitializer>();
 
         _ = services.AddTransient<IDateTime, DateTimeService>();
 

@@ -1,4 +1,4 @@
-using UrlShortenerService.Domain.Common;
+﻿using UrlShortenerService.Domain.Common;
 
 namespace UrlShortenerService.Domain.Entities;
 

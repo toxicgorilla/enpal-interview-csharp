@@ -1,7 +1,7 @@
-namespace UrlShortenerService.Api.Endpoints.Url.Requests;
+﻿namespace Api.Endpoints.Url.Requests;
 
 /// <summary>
-/// Request model for the <see cref="UrlShortenerService.Api.Endpoints.Url.ShortenUrlEndpoint"/> endpoint.
+/// Request model for the <see cref="RedirectToUrlRequest"/> endpoint.
 /// </summary>
 public class RedirectToUrlRequest
 {

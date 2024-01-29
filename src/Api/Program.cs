@@ -1,5 +1,8 @@
+﻿using Api;
+using Api.Middlewares;
 using FastEndpoints.Swagger;
-using UrlShortenerService.Api.Middlewares;
+using UrlShortenerService.Application;
+using UrlShortenerService.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 

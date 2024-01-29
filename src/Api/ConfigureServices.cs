@@ -1,8 +1,8 @@
+﻿using Api.Middlewares;
 using HashidsNet;
 using Microsoft.AspNetCore.Mvc;
-using UrlShortenerService.Api.Middlewares;
 
-namespace Microsoft.Extensions.DependencyInjection;
+namespace Api;
 
 public static class ConfigureServices
 {

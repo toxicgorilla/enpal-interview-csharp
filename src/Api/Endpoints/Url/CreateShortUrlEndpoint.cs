@@ -1,9 +1,9 @@
+﻿using Api.Endpoints.Url.Requests;
 using MediatR;
-using UrlShortenerService.Api.Endpoints.Url.Requests;
 using UrlShortenerService.Application.Url.Commands;
 using IMapper = AutoMapper.IMapper;
 
-namespace UrlShortenerService.Api.Endpoints.Url;
+namespace Api.Endpoints.Url;
 
 public class CreateShortUrlSummary : Summary<CreateShortUrlEndpoint>
 {
@@ -16,11 +16,9 @@ public class CreateShortUrlSummary : Summary<CreateShortUrlEndpoint>
     }
 }
 
-public class CreateShortUrlEndpoint : BaseEndpoint<CreateShortUrlRequest>
+public class CreateShortUrlEndpoint(ISender mediator, IMapper mapper)
+    : BaseEndpoint<CreateShortUrlRequest>(mediator, mapper)
 {
-    public CreateShortUrlEndpoint(ISender mediator, IMapper mapper)
-        : base(mediator, mapper) { }
-
     public override void Configure()
     {
         base.Configure();
@@ -41,6 +39,7 @@ public class CreateShortUrlEndpoint : BaseEndpoint<CreateShortUrlRequest>
             },
             ct
         );
-        await SendOkAsync(result);
+
+        await SendOkAsync(result, ct);
     }
 }

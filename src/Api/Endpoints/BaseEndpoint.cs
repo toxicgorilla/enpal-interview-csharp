@@ -1,7 +1,7 @@
-using MediatR;
+﻿using MediatR;
 using IMapper = AutoMapper.IMapper;
 
-namespace UrlShortenerService.Api.Endpoints;
+namespace Api.Endpoints;
 
 /// <summary>
 /// Base endpoint class with request and response types.

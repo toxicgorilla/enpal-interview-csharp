@@ -6,16 +6,8 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace UrlShortenerService.Infrastructure.Persistence.Interceptors;
 
-public class AuditableEntitySaveChangesInterceptor : SaveChangesInterceptor
+public class AuditableEntitySaveChangesInterceptor(IDateTime dateTime) : SaveChangesInterceptor
 {
-    private readonly IDateTime _dateTime;
-
-    public AuditableEntitySaveChangesInterceptor(
-        IDateTime dateTime)
-    {
-        _dateTime = dateTime;
-    }
-
     public override InterceptionResult<int> SavingChanges(DbContextEventData eventData, InterceptionResult<int> result)
     {
         UpdateEntities(eventData.Context);
@@ -38,12 +30,12 @@ public class AuditableEntitySaveChangesInterceptor : SaveChangesInterceptor
         {
             if (entry.State == EntityState.Added)
             {
-                entry.Entity.Created = _dateTime.Now;
+                entry.Entity.Created = dateTime.Now;
             }
 
             if (entry.State == EntityState.Added || entry.State == EntityState.Modified || entry.HasChangedOwnedEntities())
             {
-                entry.Entity.LastModified = _dateTime.Now;
+                entry.Entity.LastModified = dateTime.Now;
             }
         }
     }

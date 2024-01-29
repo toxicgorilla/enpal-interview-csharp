@@ -1,6 +1,6 @@
-using UrlShortenerService.Application.Common.Exceptions;
+﻿using UrlShortenerService.Application.Common.Exceptions;
 
-namespace UrlShortenerService.Api.Middlewares;
+namespace Api.Middlewares;
 
 /// <summary>
 /// Middleware to handle exceptions that occur while processing http requests.
